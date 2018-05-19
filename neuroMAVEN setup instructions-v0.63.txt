@@ -1,0 +1,29 @@
+Set up neuroMAVEN:
+
+1. Install Igor Pro 7 64-bit version (free download; then enter serial number)2. Place NeuroMAVEN_0.61 and uu_1.01 folders into Igor Procedures folder (~/Documents/WaveMetrics/Igor Pro 7 User Files/Igor Procedures; created by Igor installer)3. Start Igor644. At the Igor command window, type InitializeneuroMAVENenvironment() or choose Initialize neuroMAVEN environment from the neuroMAVEN menu.5. Under the neuroMAVEN menu, choose Show NM Paths Panel (or hit command-2 (ctrl-2 on Windows)). Enter file system paths to your raw data and desired database location.
+6. Save the current Igor experiment as a packed experiment file; suggest naming it neuroMAVEN_start.pxp.  This is your starting point for future analysis. 
+
+Prepare to preprocess data:
+
+1. Open neuroMAVEN_start.pxp.
+2. Create a new data folder titled e.g. “mouse6”, “mouseOI3”, etc.
+3. In this folder create waves called experimentnames, channelmatchstring, toptobottom_channellist, and open them in a table for editing. you can do this at the command line like so:
+
+make/N=1/T experimentnames, channelmatchstring, toptobottom_channellist;
+edit experimentnames, channelmatchstring, toptobottom_channellist
+
+This is your data load table. Populate the data load table as follows:
+
+4. In the experiment names column, type or paste a set of data directories.  For neuralynx these should look like 2011-11-07_13-56-02, 2011-11-09_13-39-58, etc.
+
+5. In the channelmatchstring column, enter the text string to be used to find the channels to analyze for each session. Any channel whose title contains what you put here will be analyzed. Default should be CSC for all rows.
+
+6. In the toptobottom_channellist column, enter the name of the remapping wave that will rearrange the channel numbers from the AD input numbers to match the top to bottom channel numbers on the probe. This name should match the neuralynx .cfg file used to set up the Cheetah recording. Choices for this option can be found in the neuromaven_resources:channelmaps folder.
+
+Now you are ready to run a preprocess batch!
+
+Preprocess data:
+
+under the neuroMAVEN menu, choose Batch Preprocess data
+
+
