@@ -3,7 +3,7 @@
 // NeuroMAVEN 0.6 master include file
 
 // requires useful utilites (uu) package
-#include "::uu_v1.02:uuinclude"
+#include "::uu:uuinclude"
 
 #include ":initialize"
 #include ":writeNSE-v2"
