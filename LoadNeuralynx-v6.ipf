@@ -14,10 +14,10 @@ Function MultiNCSLoadPreprocessSave_new (startindex, stopindex, mousefolder, exp
 	String mousefolder
 	Variable startindex, stopindex, outputmode, stage1extended
 	
-	SVAR Neuralynx_basepathstring = root:Neuralynx_basepathstring
-	SVAR HIpassuxp_basepathstring = root:HIpassuxp_basepathstring
-	SVAR HIpasspxp_basepathstring = root:HIpasspxp_basepathstring
-	SVAR database_basepathstring = root:database_basepathstring
+	SVAR Neuralynx_basepathstring = root:neuromaven_resources:pathstrings:Neuralynx_basepathstring
+	SVAR HIpassuxp_basepathstring = root:neuromaven_resources:pathstrings:HIpassuxp_basepathstring
+	SVAR HIpasspxp_basepathstring = root:neuromaven_resources:pathstrings:HIpasspxp_basepathstring
+	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
 
 	// deleted all path creation stuff from here because the base paths never get used
 		
@@ -52,7 +52,7 @@ Function MultiNCSLoadPreprocessSave_new (startindex, stopindex, mousefolder, exp
 		// make wave references for wave arguments to next function
 		// /Z because there won't always be a deletions wave
 		WAVE/Z deletions = $(deletionswave[i])
-		WAVE toptobottomchannels = $("root:"+toptobottom_channellist[i])
+		WAVE toptobottomchannels = $("root:neuromaven_resources:channelmaps:"+toptobottom_channellist[i])
 
 		// for packed or unpacked, use older function		
 		if (outputmode < 2)	
