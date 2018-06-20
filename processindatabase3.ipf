@@ -133,7 +133,7 @@ Function/WAVE Process_Session (subjectname, recordingstring, channelliststring, 
 
 	// need database base path
 	// e.g. Macintosh HD:Users:gene:Desktop:PREPROCESSED DATA:database:
-	SVAR database_basepathstring = root:database_basepathstring
+	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
 	String subject_pathstring = database_basepathstring + subjectname + ":"
 	
 	// if recording string is "" then we need a subject path to get a list of the sessions that are in it
@@ -242,7 +242,7 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 
 	// need database base path
 	// e.g. Macintosh HD:Users:gene:Desktop:PREPROCESSED DATA:database:
-	SVAR database_basepathstring = root:database_basepathstring
+	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
 	String subject_pathstring = database_basepathstring + subjectname + ":"
 	String recording_pathstring = database_basepathstring + subjectname + ":" + sessionname + ":"
 
@@ -412,8 +412,10 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 			// build name with SEdata naming convention
 			string SEchannelprefix = channelname + referencefoldersuffix + "_" + num2str(SDlevel)+"SD"+"_s00"
 			
-			// make that directory
-			newdatafolder $("::"+SEdirectory_s00_name)
+			// make that directory if it doesn't already exist
+			if (!DataFolderExists("::"+SEdirectory_s00_name))
+				newdatafolder $("::"+SEdirectory_s00_name)
+			endif
 			
 			// move the SEdata waves, just created or loaded, into it
 			moveSEwaves (channelname, "::"+SEdirectory_s00_name+":")
