@@ -1,0 +1,7 @@
+A. Set up neuroMAVEN:
+
+A1. Install Igor Pro 7 64-bit version (free download; then enter serial number)A2. Place NeuroMAVEN_X.XX and uu_X.XX folders into Igor Procedures folder (where X.XX is the current version)(~/Documents/WaveMetrics/Igor Pro 7 User Files/Igor Procedures; created by Igor installer)A3. Start Igor64A4. At the Igor command window, type InitializeneuroMAVENenvironment() or choose Initialize neuroMAVEN environment from the neuroMAVEN menu.A5. Under the neuroMAVEN menu, choose Show NM Paths Panel (or hit command-2 (ctrl-2 on Windows)). Enter file system paths to your raw data and desired database location.
+A6. Save the current Igor experiment as a packed experiment file; suggest naming it neuroMAVEN_start.pxp.  This is your starting point for future analysis. 
+
+
+

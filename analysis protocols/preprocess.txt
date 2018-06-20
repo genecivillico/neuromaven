@@ -1,0 +1,36 @@
+B. Prepare to preprocess data:
+
+B1. Open neuroMAVEN_start.pxp.
+B2. Create a new data folder titled e.g. “mouse6”, “mouseOI3”, etc.
+B3. In this folder create waves called experimentnames, channelmatchstring, toptobottom_channellist, and open them in a table for editing. you can do this at the command line like so:
+
+make/N=1/T experimentnames, channelmatchstring, toptobottom_channellist,deletionswave, filter;
+edit experimentnames, channelmatchstring, toptobottom_channellist,deletionswave, filter;
+
+This is your data load table. Populate the data load table as follows:
+
+B4. In the experiment names column, type or paste a set of data directories.  For neuralynx these should look like 2011-11-07_13-56-02, 2011-11-09_13-39-58, etc.
+
+B5. In the channelmatchstring column, enter the text string to be used to find the channels to analyze for each session. Any channel whose title contains what you put here will be analyzed. Default should be “CSC” (without the quotes) for all rows.
+
+B6. In the toptobottom_channellist column, enter the name of the remapping wave that will rearrange the channel numbers from the AD input numbers to match the top to bottom channel numbers on the probe. This name should match the neuralynx .cfg file used to set up the Cheetah recording. Choices for this option can be found in the neuromaven_resources:channelmaps folder.
+
+Now you are ready to run a preprocess batch!
+
+B7. Generate a database of Igor waves containing the recordings, their header information, the average trace for each session, the SD for each recording, the PSD for each recording, and the running power for each recording, by running this command:
+
+multiNCSloadpreprocesssave_new(0,0,”mouse6",experimentnames,channelmatchstring,filter,deletionswave,toptobottom_channellist,2)
+
+replace the 0s with the indices of the first and last entries you want to load in your data load table.  For example to do the first three rows use 0,2.
+replace “mouse6” with whatever name you’re using for the data folder created in preprocessing step 2 above.
+
+B8. Generate spike event data from the recordings by running this command:
+
+*there are commands to do all mice and all sessions within a subject, but for now let’s go one subject at a time with
+
+Process_Session ("mouse6", "2011-11-17_14-46-09", "", "RAW","coherencematrix", coherence_parameters, 1,1)
+
+change this for SEdata
+
+
+Process_Subjects (subjectstring, subjectstringISlist, referencename, channelliststring, whichanalysis, analysisparameters, keepinRAM, saveouttoDB) 
