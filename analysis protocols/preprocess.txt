@@ -26,11 +26,12 @@ replace “mouse6” with whatever name you’re using for the data folder creat
 
 B8. Generate spike event data from the recordings by running this command:
 
-*there are commands to do all mice and all sessions within a subject, but for now let’s go one subject at a time with
+*there are commands to do all mice and all sessions within a subject, but for now let’s go one session at a time with
 
-Process_Session ("mouse6", "2011-11-17_14-46-09", "", "RAW","coherencematrix", coherence_parameters, 1,1)
+Process_Session ("mouse6", "2011-11-17_14-46-09", "", "AVG","SEdata", root:SEdata_parameters_all, 1,1)
+This command will result in a folder in the filesystem database/mouse6/2011-11-17_14-46-09/ and also in the Igor databrowser a folder called SEdata_AVG_3SD_s00.  AVG refers to the reference channel. 3SD refers to the threshold cutoff used to pull the spikes.
 
-change this for SEdata
+B9. Write out .nse format files by running this command:
 
+ 
 
-Process_Subjects (subjectstring, subjectstringISlist, referencename, channelliststring, whichanalysis, analysisparameters, keepinRAM, saveouttoDB) 

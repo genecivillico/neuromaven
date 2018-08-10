@@ -161,13 +161,20 @@ Function/WAVE Process_Session (subjectname, recordingstring, channelliststring, 
 	
 	// make the strip which will be the return value.  assume 16 channels for now BUT WILL NEED TO FIX THIS
 	make/o/n=(numchannels) sessionOutput = 0
+	variable savechanneloutputtoDB = 0
 	
 	if (AnalysisTakesSingleChannelInput(whichanalysis))
 		
 		for (i=0; i < numchannels; i += 1)
 
 			string nextChannel = StringFromList(i, channelliststring)
-			sessionOutput[i] = Process_Single_Channel (subjectname, recordingstring, nextChannel, referencename, whichanalysis, analysisparameters, keepinRAM)	
+			
+			// if session is to be saved out and we are on the last channel, 
+			if (saveouttoDB && (i==(numchannels - 1)))
+				savechanneloutputtoDB = 1
+			endif
+			
+			sessionOutput[i] = Process_Single_Channel (subjectname, recordingstring, nextChannel, referencename, whichanalysis, analysisparameters, keepinRAM, savechanneloutputtoDB)	
 
 		endfor
 	
@@ -232,9 +239,9 @@ end
 // deals with two kinds of operations
 // 	creating and saving out a wave for each channel, in which case it returns a success/failure
 //	computing a number for each channel, in which case it returns the number	
-Function Process_Single_Channel (subjectname, sessionname, channelname, referencename, whichanalysis, analysisparameters, keepinRAM)
+Function Process_Single_Channel (subjectname, sessionname, channelname, referencename, whichanalysis, analysisparameters, keepinRAM, saveouttoDB)
 	string subjectname, sessionname, channelname, whichanalysis, referencename
-	variable keepinRAM
+	variable keepinRAM, saveouttoDB
 	WAVE analysisparameters
 	
 	setdatafolder root:
@@ -267,7 +274,11 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 		referencefoldersuffix =  ("_" + referencename)
 	endif
 
-	variable resultnumber = 0
+	// resulttype 0: single number
+	//	resulttype 1: single wave per channel
+	// resulttype 2: directory or directories containing multiple waves
+	variable resulttype = -1
+	variable resultvalue
 
 	// create variables and run analysis according to whichanalysis
 	strswitch (whichanalysis)
@@ -275,29 +286,29 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 		// debug case *********************	
 		case "debug":
 			printf "this is not real analysis, just debugging\r"
-			resultnumber = enoise(1)
-			numresultwaves = 0
+			resultvalue = enoise(1)
+			resulttype = 0
 		break
 
 		// these next cases are the ones that just compute a value *******************	
 		case "AER": // analysis is type that returns a single number per channel		
-			resultnumber = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
-			numresultwaves = 0
+			resultvalue = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
+			resulttype = 0
 		break
 
 		case "Vpp": // analysis is type that returns a single number per channel		
-			resultnumber = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
-			numresultwaves = 0
+			resultvalue = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
+			resulttype = 0
 		break
 
 		case "power": // analysis is type that returns a single number per channel		
-			resultnumber = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
-			numresultwaves = 0
+			resultvalue = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
+			resulttype = 0
 		break
 
 		case "SDsubject": // analysis is type that returns a single number per channel		
-			resultnumber = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
-			numresultwaves = 0
+			resultvalue = ComputeFromDatabaseChannels (subjectname, sessionname, channelname, referencename, 1, whichanalysis, analysisparameters)
+			resulttype = 0
 		break
 
 		// these next cases result in one wave output per channel *******************	
@@ -315,8 +326,8 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 			duplicate/o theResult $(channelname)
 			resultname = channelname
 			killwaves theResult
-			
-			numresultwaves = 1
+
+			resulttype = 1			
 			output_pathstring = recording_pathstring + whichanalysis + referencefoldersuffix
 
 		break
@@ -340,7 +351,7 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 			resultname = channelname
 			killwaves theResult
 			
-			numresultwaves = 1
+			resulttype = 1			
 			output_pathstring = recording_pathstring + whichanalysis + referencefoldersuffix
 
 		break
@@ -461,7 +472,8 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 			//output_pathstring += outputpathSEsuffix
 			//print output_pathstring
 
-			numresultwaves = itemsinlist(directorysavelist)
+			resulttype = 2
+			variable numdirectoriestosave = itemsinlist(directorysavelist)
 
 		break
 		
@@ -469,27 +481,37 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 
 	// create output path
 	newpath/O/C outputpath, output_pathstring
+	
+	// only do this stuff if saveouttodb
+	if (saveouttodb)
 
-	// save out	
-	if (numresultwaves == 1)
-		// save runningoutput to output path as xxxxxx.ibw
-		Save/O/P=outputpath $(resultname)
-	elseif (numresultwaves > 1)
-		// borrow method from NCSload function
-		setdatafolder root:
-		newdatafolder output
+		if (resulttype == 1)
+			// save single wave result to output path as xxxxxx.ibw
+			Save/O/P=outputpath $(resultname)
+		elseif (resulttype == 2)
+			// borrow method from NCSload function
+			setdatafolder root:
 		
-		variable j
-		string nextfolder
-		for (j=0; j < numresultwaves; j+=1)
-			nextfolder = StringFromList(j, directorysavelist)
-			// for everything in savedirectory list, move to output
-			movedatafolder $nextfolder, :output:
-		endfor
+			if (!DataFolderExists("output"))
+				newdatafolder output
+			endif
+			
+			variable j
+			string nextfolder
+			for (j=0; j < numdirectoriestosave; j+=1)
+				nextfolder = StringFromList(j, directorysavelist)
+				// for everything in savedirectory list, duplicate to output
+				duplicatedatafolder $nextfolder, :output:$nextfolder
+			endfor
 		
-		setdatafolder output
-		// then do a savedata/D=1/O ("mix-in" mode with overwrite)
-		savedata/D=1/O/P=outputpath/R sessionname
+			setdatafolder output
+			// then do a savedata/D=1/O ("mix-in" mode with overwrite)
+			savedata/D=1/O/P=outputpath/R sessionname
+		
+			// then nuke the output folder
+			setdatafolder ::
+			killdatafolder/Z output
+		endif
 	endif
 	
 	setdatafolder root:
@@ -501,12 +523,13 @@ Function Process_Single_Channel (subjectname, sessionname, channelname, referenc
 	killdatafolder/Z data_records
 
 	if (!keepinRAM)
-		killdatafolder/Z output
+		// cycle through numdirectories to save and killdatafolder on them
+		printf "deleting data folders from RAM not implemented yet\r"
 	endif
 	
 	// this is the case where we care about the number
-	if (numresultwaves == 0)
-		return resultnumber
+	if (resulttype == 0)
+		return resultvalue
 	else
 		return 1 // completed
 	endif

@@ -202,7 +202,7 @@ Function LoadAndRereferenceFromDatabase2 (subjectname, sessionname, channelname,
 
 	// need database base path
 	// e.g. Macintosh HD:Users:gene:Desktop:PREPROCESSED DATA:database:
-	SVAR database_basepathstring = root:database_basepathstring
+	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
 	String subject_pathstring = database_basepathstring + subjectname + ":"
 	String recording_pathstring = database_basepathstring + subjectname + ":" + sessionname + ":"
 

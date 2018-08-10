@@ -1023,3 +1023,47 @@ Function writeNSE_all (SEstringlist, outputpathnsestring, SEfoldersuffix)
 	endfor
 
 end
+
+// writes SEdata to neuralynx spike event format (.nse file)
+// right now assumes SEdata is present in the Igor file.  Need to add capability to load if it isn't already there.
+// this one is always saveouttodb because the whole point of it is to write binaries out to Igor
+Function writeNSE_to_database (datafoldername, subjectname, recordingstring)
+	string datafoldername, subjectname, recordingstring
+
+	printf "    writeNSE_to_database called on %s\r", datafoldername
+
+	// need database base path
+	// e.g. Macintosh HD:Users:gene:Desktop:PREPROCESSED DATA:database:
+	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
+	String subject_pathstring = database_basepathstring + subjectname + ":"
+	
+	variable i, numchannels
+		
+	// this is hard-code needs to be fixed
+	string channelmatchstring = "HI_NIP"
+
+	string SEdata_pathstring = database_basepathstring + subjectname + ":" + recordingstring + ":" + datafoldername + ":"
+	
+	// change to datafolder
+	setdatafolder $("root:"+datafoldername)
+
+	for (i=0; i < numchannels; i += 1)
+
+			string nextprefix = channelmatchstring + num2str(i+1)
+
+			string nextfileheadername = nextprefix+"_SEheadfile"
+			WAVE nextfileheader = $nextfileheadername
+			
+			string nextrecordheadername = nextprefix+"_SEheadrec"
+			WAVE nextrecordheader = $nextrecordheadername
+
+			string nextdatarecordname = nextprefix+"_SEdatarec"
+			WAVE nextdatarecord = $nextdatarecordname
+			
+			writeNSE (fileheader, recordheaders, waveformdata, SEdata_pathstring)
+
+	endfor
+
+end
+
+
