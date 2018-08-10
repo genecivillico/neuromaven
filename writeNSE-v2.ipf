@@ -1025,7 +1025,7 @@ Function writeNSE_all (SEstringlist, outputpathnsestring, SEfoldersuffix)
 end
 
 // writes SEdata to neuralynx spike event format (.nse file)
-// right now assumes SEdata is present in the Igor file.  Need to add capability to load if it isn't already there.
+// right now assumes SEdata is present in the Igor file.  Eventually will need to add capability to load if it isn't already there.
 // this one is always saveouttodb because the whole point of it is to write binaries out to Igor
 Function writeNSE_to_database (datafoldername, subjectname, recordingstring)
 	string datafoldername, subjectname, recordingstring
@@ -1037,7 +1037,7 @@ Function writeNSE_to_database (datafoldername, subjectname, recordingstring)
 	SVAR database_basepathstring = root:neuromaven_resources:pathstrings:database_basepathstring
 	String subject_pathstring = database_basepathstring + subjectname + ":"
 	
-	variable i, numchannels
+	variable i
 		
 	// this is hard-code needs to be fixed
 	string channelmatchstring = "HI_NIP"
@@ -1047,20 +1047,29 @@ Function writeNSE_to_database (datafoldername, subjectname, recordingstring)
 	// change to datafolder
 	setdatafolder $("root:"+datafoldername)
 
-	for (i=0; i < numchannels; i += 1)
+	for (i=0; i < 16; i += 1)
 
 			string nextprefix = channelmatchstring + num2str(i+1)
 
 			string nextfileheadername = nextprefix+"_SEheadfile"
 			WAVE nextfileheader = $nextfileheadername
+			if (!waveexists(nextfileheader))
+				printf "missing input %s\r", nextfileheadername
+			endif
 			
 			string nextrecordheadername = nextprefix+"_SEheadrec"
 			WAVE nextrecordheader = $nextrecordheadername
+			if (!waveexists(nextrecordheader))
+				printf "missing input %s\r", nextrecordheadername
+			endif
 
 			string nextdatarecordname = nextprefix+"_SEdatarec"
 			WAVE nextdatarecord = $nextdatarecordname
+			if (!waveexists(nextdatarecord))
+				printf "missing input %s\r", nextdatarecordname
+			endif
 			
-			writeNSE (fileheader, recordheaders, waveformdata, SEdata_pathstring)
+			writeNSE (nextfileheader, nextrecordheader, nextdatarecord, SEdata_pathstring+nextprefix+".nse")
 
 	endfor
 

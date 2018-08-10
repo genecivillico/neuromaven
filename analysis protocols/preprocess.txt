@@ -29,9 +29,12 @@ B8. Generate spike event data from the recordings by running this command:
 *there are commands to do all mice and all sessions within a subject, but for now let’s go one session at a time with
 
 Process_Session ("mouse6", "2011-11-17_14-46-09", "", "AVG","SEdata", root:SEdata_parameters_all, 1,1)
-This command will result in a folder in the filesystem database/mouse6/2011-11-17_14-46-09/ and also in the Igor databrowser a folder called SEdata_AVG_3SD_s00.  AVG refers to the reference channel. 3SD refers to the threshold cutoff used to pull the spikes.
+This command will result in a folder in the filesystem …database/mouse6/2011-11-17_14-46-09/SEdata_AVG_3SD_s00 and also in the Igor databrowser a folder called SEdata_AVG_3SD_s00.  AVG refers to the reference channel. 3SD refers to the threshold cutoff used to pull the spikes.
 
 B9. Write out .nse format files by running this command:
 
+•writeNSE_to_database ("SEdata_AVG_3SD_s00", "mouse6", "2011-11-17_14-46-09")
+This will result in one .nse file per channel being written to database/mouse6/2011-11-17_14-46-09/SEdata_AVG_3SD_s00/
+These nse files can be worked with in SS3D.
  
 
