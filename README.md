@@ -5,7 +5,7 @@ It captures a collection of domain-specific procedures used to extract, preproce
 
 This code has been developed collaboratively and used in brain signal reliability studies at **FDA/CDRH** — and reflects mature practices for handling neural time series data in support of machine-learning-based biomarker development.
 
-Most code is written in IGOR (interactive graphical operations for research) script. IGOR is an analysis and development environment, widely used in neurophysiological research and instrument control. The script language is procedural and C-like, and the environment is increasingly integrated with python tools. Accordingly, the Neuromaven roadmap includes full conversion to python toolkit while preserving the IGOR principles of multiscale inspectability of data, clean publication-quality visualization by default, and speed.
+The code is mostly written in IGOR (interactive graphical operations for research) script. IGOR is an analysis and development environment, widely used in neurophysiological research and instrument control. The script language is procedural and C-like, and the environment is increasingly integrated with python tools. Accordingly, the Neuromaven roadmap includes full conversion to python toolkit while preserving the IGOR principles of multiscale inspectability of data, clean publication-quality visualization by default, and speed.
 
 ---
 
