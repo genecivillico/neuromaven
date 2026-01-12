@@ -3,7 +3,7 @@
 **Neuromaven** is an open-source repository of data processing workflows and analytical scripts for neural signal analysis.
 It captures a collection of domain-specific procedures used to extract, preprocess, and visualize features from brain electrophysiology recordings, with an emphasis on reproducibility, clarity, and scientific utility.
 
-This code has been developed collaboratively and used in real biomedical research — including brain signal reliability studies at **FDA/CDRH** — and reflects mature practices for handling neural time series data in support of machine-learning-based biomarker development.
+This code has been developed collaboratively and used in brain signal reliability studies at **FDA/CDRH** — and reflects mature practices for handling neural time series data in support of machine-learning-based biomarker development.
 
 ---
 
@@ -16,8 +16,6 @@ Neuromaven exists to help researchers and engineers:
 * **Extract and visualize meaningful signal features**
 * **Prepare curated features for downstream machine learning models**
   (e.g., biomarker discovery, classification, reliability assessment)
-
-This repository demonstrates practical expertise in neural signal workflows — a core competency for roles in neuro-AI and computational biomarkers such as at *neumarker.ai*.
 
 ---
 
